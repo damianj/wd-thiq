@@ -59,7 +59,7 @@ app.get('/api/get/data', (req, res) => {
                             "set_id": book.set_id,
                             "condition": book.condition,
                             "status": book.status,
-                            "errors": book.errors
+                            "errors": book.errors.join(", ")
                         });
                 });
         });
@@ -69,8 +69,8 @@ app.get('/api/get/data', (req, res) => {
 app.post('/api/post/form_data', (req, res) => {
     new formidable.IncomingForm().parse(req, (err, fields, files) => {
         if (err) {
-            console.error('Error', err)
-            throw err
+            console.error(err);
+            return res.send("Something went wrong while handling the POST request.");
         }
 
         let oldPath = files.file.path;
@@ -78,17 +78,24 @@ app.post('/api/post/form_data', (req, res) => {
         let rawData = fs.readFileSync(oldPath)
 
         fs.writeFile(newPath, rawData, function (err) {
-            if (err) console.log(err)
+            if (err) {
+                console.log(err);
+                return res.send("Something went wrong while saving the data.");
+            }
+
+            let oldData = require('./data/all_data.json');
+            let newData = require(`./data/data_${file_count}.json`);
+
+            oldData.push(newData);
+
+            fs.writeFile('./data/all_data.json', Buffer.from(JSON.stringify(oldData)), function(err) {
+                if (err) console.log(err)
+            });
 
             file_count += 1;
-            return res.send("Successfully uploaded")
+
+            return res.redirect("/")
         });
-
-        let oldData = require('./data/all_data.json');
-        let newData = require(`./data/data_${file_count}.json`);
-
-        //oldData.push(newData);
-        console.log(oldData);
     })
 });
 

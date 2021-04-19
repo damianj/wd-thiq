@@ -23,7 +23,7 @@ function UploadFile() {
         <form method="POST" action="/api/post/form_data" encType="multipart/form-data">
             <div className="d-flex p-2 col-example">
                 <input type="file" name="file" />
-                <button type="submit">Upload</button>
+                <button type="submit">Upload JSON Data</button>
             </div>
         </form>
     )

@@ -10,6 +10,8 @@ const DatatablePage = () => {
                 hover
                 data="/api/get/data"
             />
+            <br />
+            <a href="/upload/data">Upload Data</a>
         </div>
     );
 }
